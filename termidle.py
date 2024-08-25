@@ -7,6 +7,11 @@ MAX_GUESS_ALLOWED = 6
 WRONG_POSITION = 'on_yellow'
 CORRECT = 'on_green'
 WRONG = 'on_black'
+UNUSED = 'on_dark_grey'
+
+ROW1_LETTERS = ['q', 'w', 'e', 'r', 't', 'y', 'u', 'i', 'o', 'p']
+ROW2_LETTERS = ['a', 's', 'd', 'f', 'g', 'h', 'j', 'k', 'l']
+ROW3_LETTERS = ['z', 'x', 'c', 'v', 'b', 'n', 'm']
 
 # These 2 methods are used if words are from words.txt as one/row
 #
@@ -28,6 +33,35 @@ WRONG = 'on_black'
 #         else:
 #             return False
     
+alphabet = {
+    'a': UNUSED,
+    'b': UNUSED,
+    'c': UNUSED,
+    'd': UNUSED,
+    'e': UNUSED,
+    'f': UNUSED,
+    'g': UNUSED,
+    'h': UNUSED,
+    'i': UNUSED,
+    'j': UNUSED,
+    'k': UNUSED,
+    'l': UNUSED,
+    'm': UNUSED,
+    'n': UNUSED,
+    'o': UNUSED,
+    'p': UNUSED,
+    'q': UNUSED,
+    'r': UNUSED,
+    's': UNUSED,
+    't': UNUSED,
+    'u': UNUSED,
+    'v': UNUSED,
+    'w': UNUSED,
+    'x': UNUSED,
+    'y': UNUSED,
+    'z': UNUSED
+}    
+
 def get_word_to_guess() -> str:
     return DICTIONARY[random.randint(0, len(DICTIONARY))]
 
@@ -49,6 +83,7 @@ def prompt_for_guess(guesses) -> str:
     guesses.append(guess)
     if guess == word_to_guess:
         print_guesses(guesses)
+        print_letters_status()
         print(f'You won!')
         exit()
     else:
@@ -61,27 +96,49 @@ def prompt_for_guess(guesses) -> str:
 def format_guess(word) -> str:
     if word is None:
         return
-    result = ''
+    result = ' '
     for i in range(0, 5):
         c = word[i]
         cw = word_to_guess[i]
         if c == cw:
-            result += colored(c.upper(), 'white', CORRECT)
+            result += colored(c.upper(), 'white', CORRECT) + ' '
+            alphabet[c] = CORRECT
         elif c in word_to_guess:
             if word.count(c) > word_to_guess.count(c):
-                result += colored(c.upper(), 'white', WRONG)
+                result += colored(c.upper(), 'white', WRONG) + ' '
+                alphabet[c] = WRONG
             else:
-                result += colored(c.upper(), 'white', WRONG_POSITION)
+                result += colored(c.upper(), 'white', WRONG_POSITION) + ' '
+                alphabet[c] = WRONG_POSITION
         else:
-            result += colored(c.upper(), 'white', WRONG)
+            result += colored(c.upper(), 'white', WRONG) + ' '
+            alphabet[c] = WRONG
     return result
 
 def print_guesses(guesses):
     for word in guesses:
         print(format_guess(word))
 
-def update_letters_status(guess):
-    pass
+def print_letters_status():
+    row1 = ''
+    row2 = ' '
+    row3 = '  '
+    print('\n')
+    
+    i = 0
+    for c in ROW1_LETTERS:
+        row1 += colored(c.upper(), 'white', alphabet.get(c))
+        if i == 4:
+            row1 += ' ' 
+        i += 1
+    for c in ROW2_LETTERS:
+        row2 += colored(c.upper(), 'white', alphabet.get(c))
+    for c in ROW3_LETTERS:
+        row3 += colored(c.upper(), 'white', alphabet.get(c))
+
+    print(row1)
+    print(row2)
+    print(row3)
 
 current_guess = 0
 word_to_guess = ''
@@ -95,7 +152,7 @@ word_to_guess = get_word_to_guess()
 # word_to_guess = 'teach' #-> audio, brave, teats
 for i in range(0, MAX_GUESS_ALLOWED):
     guess = prompt_for_guess(all_guesses)
-    print_guesses(all_guesses)    
-    update_letters_status(guess)
+    print_guesses(all_guesses)   
+    print_letters_status() 
 
 print(f'You have lost! The word is {word_to_guess.upper()}')
