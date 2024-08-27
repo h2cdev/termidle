@@ -105,8 +105,12 @@ def format_guess(word) -> str:
             alphabet[c] = CORRECT
         elif c in word_to_guess:
             if word.count(c) > word_to_guess.count(c):
-                result += colored(c.upper(), 'white', WRONG) + ' '
-                alphabet[c] = WRONG
+                if alphabet[c] is UNUSED:
+                    result += colored(c.upper(), 'white', WRONG_POSITION) + ' '
+                    alphabet[c] = WRONG_POSITION
+                else:
+                    result += colored(c.upper(), 'white', WRONG) + ' '
+                    alphabet[c] = WRONG
             else:
                 result += colored(c.upper(), 'white', WRONG_POSITION) + ' '
                 alphabet[c] = WRONG_POSITION
@@ -144,12 +148,13 @@ current_guess = 0
 word_to_guess = ''
 all_guesses = []
 
-word_to_guess = get_word_to_guess()
+# word_to_guess = get_word_to_guess()
 
 # double-letter words to test
 # word_to_guess = 'teeth'
 # word_to_guess = 'eases'
 # word_to_guess = 'teach' #-> audio, brave, teats
+word_to_guess = 'memos' #-> irate, emote, seeds
 for i in range(0, MAX_GUESS_ALLOWED):
     guess = prompt_for_guess(all_guesses)
     print_guesses(all_guesses)   
